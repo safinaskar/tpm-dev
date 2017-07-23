@@ -1,0 +1,58 @@
+#!/bin/bash
+
+set -e
+
+. "$(tpm shlib)"
+
+upload(){
+	PACKAGE="$(tpm_anz "$1")"
+	tpm_az "$2"
+
+	tpm_source /opt/tpm-store/etc/tpm.conf
+
+	(
+		# Удаляем от sudo, т. к. пишем от sudo
+		TEMP="$(tpm_mktemp_directory)"
+		trap "sudo rm -r '$TEMP'" EXIT
+
+		sudo tpm build "$PACKAGE" -o "$TEMP/package.tar.gz"
+
+		[ "$ARCH" = any ] && ARCH="$SYSTEM_ARCH"
+
+		ssh "$UPLOAD_USER_HOST" "mkdir -p $(printf '%q\n' "$UPLOAD_DIR/$ARCH/${PACKAGE%/*}")"
+		scp "$TEMP/package.tar.gz" "$UPLOAD_USER_HOST":"$UPLOAD_DIR/$ARCH/$PACKAGE.tar.gz"
+	)
+}
+
+usage(){
+	tpm_az "$1"
+
+	cat << EOF >&2
+bad
+EOF
+}
+
+case "$1" in
+	upload)
+		PACKAGE="$(tpm_unz "$2")"
+		tpm_uz "$3"
+
+		tpm_is_root && echo "${0##*/}: warning: you are root" >&2
+
+		upload "$PACKAGE"
+		;;
+
+	install)
+		PACKAGE="$(tpm_unz "$2")"
+		tpm_uz "$3"
+
+		tpm_is_root && echo "${0##*/}: warning: you are root" >&2
+
+		upload "$PACKAGE"
+		sudo tpm install "$PACKAGE"
+		;;
+
+	*)
+		usage
+		;;
+esac
