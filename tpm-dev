@@ -30,6 +30,8 @@ usage(){
 	cat << EOF >&2
 bad
 EOF
+
+	exit 1
 }
 
 case "$1" in
