@@ -17,7 +17,7 @@ upload(){
 
 		sudo tpm build "$PACKAGE" -o "$TEMP/package.tar.gz"
 
-		tpm_download "https://github.com/$PACKAGE/raw/master/tpm-control" "$TEMP/tpm-control"
+		tpm_download "https://github.com/$PACKAGE/raw/master/tpm-control" "$TEMP/tpm-control" true
 
 		tpm_source "$TEMP/tpm-control"
 
