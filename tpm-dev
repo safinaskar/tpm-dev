@@ -48,16 +48,6 @@ case "$1" in
 		upload "$PACKAGE"
 		;;
 
-	install)
-		PACKAGE="$(tpm_unz "$2")"
-		tpm_uz "$3"
-
-		tpm_is_root && echo "${0##*/}: warning: you are root" >&2
-
-		upload "$PACKAGE"
-		sudo tpm install "$PACKAGE"
-		;;
-
 	*)
 		usage
 		;;
