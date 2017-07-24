@@ -2,7 +2,7 @@
 
 set -e
 
-. "$(tpm shlib)"
+eval "$(tpm shlib)"
 
 upload(){
 	PACKAGE="$(tpm_anz "$1")"
