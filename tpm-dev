@@ -5,14 +5,14 @@ set -e
 eval "$(tpm shlib)"
 
 upload(){
-	PACKAGE="$(tpm_anz "$1")"
+	local PACKAGE="$(tpm_anz "$1")"
 	tpm_az "$2"
 
-	tpm_source /opt/tpm-store/etc/tpm.conf
-
 	(
+		tpm_source /opt/tpm-store/etc/tpm.conf
+
 		# Удаляем от sudo, т. к. пишем от sudo
-		TEMP="$(tpm_mktemp_directory)"
+		local TEMP="$(tpm_mktemp_directory)"
 		trap "sudo rm -r '$TEMP'" EXIT
 
 		sudo tpm build "$PACKAGE" -o "$TEMP/package.tar.gz"
