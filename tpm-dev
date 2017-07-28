@@ -32,7 +32,7 @@ usage(){
 	tpm_az "$1"
 
 	cat << EOF >&2
-bad
+Usage: ${0##*/} upload PACKAGE
 EOF
 
 	exit 1
